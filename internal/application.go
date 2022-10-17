@@ -8,8 +8,9 @@ func NewApplication(repository Repository) *Application {
 	return &Application{repository: repository}
 }
 
-func (app *Application) Create(request CreateRequest) (*CreateResponse, error) {
-	return app.repository.Save(request)
+func (app *Application) Create(request CreateRequest) (CreateResponse, error) {
+	membership, err := app.repository.Create(request)
+	return CreateResponse{membership.UserName, membership.MembershipType}, err
 }
 
 func (app *Application) Update(request UpdateRequest) (UpdateResponse, error) {

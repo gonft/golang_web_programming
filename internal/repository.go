@@ -3,7 +3,6 @@ package internal
 import (
 	"errors"
 	"golang.org/x/exp/slices"
-	"strconv"
 )
 
 var UserNameAlreadyExistsError = errors.New("이미 등록된 사용자 이름이 존재합니다.")
@@ -20,7 +19,7 @@ func (r *Repository) exists(name string) bool {
 	return ok
 }
 
-func (r *Repository) Save(request CreateRequest) (*CreateResponse, error) {
+func (r *Repository) Create(request CreateRequest) (*Membership, error) {
 	switch {
 	case r.exists(request.UserName):
 		return nil, UserNameAlreadyExistsError
@@ -31,8 +30,9 @@ func (r *Repository) Save(request CreateRequest) (*CreateResponse, error) {
 	case !slices.Contains([]string{"naver", "toss", "payco"}, request.MembershipType):
 		return nil, MembershipTypeInvalidError
 	}
-	r.data[request.UserName] = Membership{UserName: request.UserName, MembershipType: request.MembershipType}
-	return &CreateResponse{strconv.Itoa(len(r.data)), request.MembershipType}, nil
+	membership := Membership{UserName: request.UserName, MembershipType: request.MembershipType}
+	r.data[request.UserName] = membership
+	return &membership, nil
 }
 
 func NewRepository(data map[string]Membership) *Repository {
