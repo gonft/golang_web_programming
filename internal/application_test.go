@@ -2,6 +2,8 @@ package internal
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -50,6 +52,25 @@ func TestCreateMembership(t *testing.T) {
 	})
 
 	t.Run("naver/toss/payco 이외의 타입을 입력한 경우 실패한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포가 주어지고
+		app := NewApplication(*NewRepository(map[string]Membership{}))
+
+		// when: naver/toss/payco 타입 등록
+		types := []string{"naver", "toss", "payco"}
+		for i := 0; i < len(types); i++ {
+			req := CreateRequest{strings.Join([]string{"jenny", strconv.Itoa(i)}, "-"), types[i]}
+			res, err := app.Create(req)
+			// then: 성공한다.
+			assert.Nil(t, err)
+			assert.NotEmpty(t, res.ID)
+			assert.Equal(t, req.MembershipType, res.MembershipType)
+		}
+		// when: naver/toss/payco 말고 다른 타입 등록
+		req := CreateRequest{"jenny", "kakao"}
+		res, err := app.Create(req)
+		// then: 실패한다.
+		assert.Nil(t, res)
+		assert.NotNil(t, err)
 
 	})
 }
