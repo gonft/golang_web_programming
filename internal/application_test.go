@@ -28,10 +28,10 @@ func TestCreateMembership(t *testing.T) {
 	})
 
 	t.Run("사용자 이름을 입력하지 않은 경우 실패한다.", func(t *testing.T) {
-		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
+		// given: 어플리케이션 멤버쉽 레포가 주어지고
 		app := NewApplication(*NewRepository(map[string]Membership{}))
-		req := CreateRequest{"", "naver"}
 		// when: 이름 없이 사용자를 등록하려고 한다.
+		req := CreateRequest{"", "naver"}
 		res, err := app.Create(req)
 		// then: 실패한다.
 		assert.Nil(t, res)
@@ -39,7 +39,14 @@ func TestCreateMembership(t *testing.T) {
 	})
 
 	t.Run("멤버십 타입을 입력하지 않은 경우 실패한다.", func(t *testing.T) {
-
+		// given: 어플리케이션 멤버쉽 레포가 주어지고
+		app := NewApplication(*NewRepository(map[string]Membership{}))
+		// when: 이름 없이 사용자를 등록하려고 한다.
+		req := CreateRequest{"jenny", ""}
+		res, err := app.Create(req)
+		// then: 실패한다.
+		assert.Nil(t, res)
+		assert.NotNil(t, err)
 	})
 
 	t.Run("naver/toss/payco 이외의 타입을 입력한 경우 실패한다.", func(t *testing.T) {
