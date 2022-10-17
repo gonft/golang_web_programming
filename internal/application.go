@@ -1,7 +1,5 @@
 package internal
 
-import "errors"
-
 type Application struct {
 	repository Repository
 }
@@ -9,8 +7,6 @@ type Application struct {
 func NewApplication(repository Repository) *Application {
 	return &Application{repository: repository}
 }
-
-var UserNameAlreadyExistsError = errors.New("이미 등록된 사용자 이름이 존재합니다.")
 
 func (app *Application) Create(request CreateRequest) (*CreateResponse, error) {
 	return app.repository.Save(request)
