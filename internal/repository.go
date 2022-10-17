@@ -15,14 +15,14 @@ type Repository struct {
 	data map[string]Membership
 }
 
-func (r *Repository) Exists(name string) bool {
+func (r *Repository) exists(name string) bool {
 	_, ok := r.data[name]
 	return ok
 }
 
 func (r *Repository) Save(request CreateRequest) (*CreateResponse, error) {
 	switch {
-	case r.Exists(request.UserName):
+	case r.exists(request.UserName):
 		return nil, UserNameAlreadyExistsError
 	case request.UserName == "":
 		return nil, UserNameEmptyError
