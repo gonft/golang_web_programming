@@ -177,7 +177,15 @@ func TestDelete(t *testing.T) {
 	})
 
 	t.Run("id를 입력하지 않았을 때 예외 처리한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
+		app := NewApplication(*NewRepository(map[string]Membership{}))
+		_, _ = app.Create(CreateRequest{"jenny", "naver"})
 
+		// when: 멤버쉽 ID를 입력하지 않고 삭제한다.
+		err := app.Delete("")
+
+		// then: 실패한다.
+		assert.NotNil(t, err)
 	})
 
 	t.Run("입력한 id가 존재하지 않을 때 예외 처리한다.", func(t *testing.T) {
