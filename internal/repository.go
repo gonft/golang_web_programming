@@ -67,6 +67,15 @@ func (r *Repository) Update(request UpdateRequest) (*Membership, error) {
 	return &membership, nil
 }
 
+func (r *Repository) Delete(id string) error {
+	switch {
+	case id == "" || !r.exists(id):
+		return UserIdNotFoundError
+	}
+	delete(r.data, id)
+	return nil
+}
+
 func NewRepository(data map[string]Membership) *Repository {
 	return &Repository{data: data}
 }
