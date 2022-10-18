@@ -20,10 +20,9 @@ func TestCreateMembership(t *testing.T) {
 	t.Run("이미 등록된 사용자 이름이 존재할 경우 실패한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		app := NewApplication(*NewRepository(map[string]Membership{}))
-		req := CreateRequest{"jenny", "naver"}
-		_, _ = app.Create(req)
+		_, _ = app.Create(CreateRequest{"jenny", "naver"})
 		// when: 다시 jenny를 등록하려고 한다.
-		res, err := app.Create(req)
+		res, err := app.Create(CreateRequest{"jenny", "naver"})
 		// then: 실패한다.
 		assert.Nil(t, res)
 		assert.NotNil(t, err)
@@ -71,7 +70,6 @@ func TestCreateMembership(t *testing.T) {
 		// then: 실패한다.
 		assert.Nil(t, res)
 		assert.NotNil(t, err)
-
 	})
 }
 
@@ -82,8 +80,10 @@ func TestUpdate(t *testing.T) {
 		_, _ = app.Create(CreateRequest{"jenny", "naver"})
 
 		// when: 제니의 멤버쉽을 toss로 갱신한다.
-		req := UpdateRequest{"1", "jenny", "naver"}
+		req := UpdateRequest{"1", "jenny", "toss"}
 		res, err := app.Update(req)
+
+		t.Log(res)
 
 		// then: 성공한다.
 		assert.Nil(t, err)
@@ -92,7 +92,20 @@ func TestUpdate(t *testing.T) {
 	})
 
 	t.Run("수정하려는 사용자의 이름이 이미 존재하는 사용자 이름이라면 예외 처리한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
+		app := NewApplication(*NewRepository(map[string]Membership{}))
+		_, _ = app.Create(CreateRequest{"jenny", "naver"})
+		_, _ = app.Create(CreateRequest{"jenny2", "naver"})
 
+		// when: jenny2의 이름을 jenny로 갱신한다.
+		req := UpdateRequest{"2", "jenny", "naver"}
+		res, err := app.Update(req)
+
+		t.Log(res)
+
+		// then: 실패한다.
+		assert.Nil(t, res)
+		assert.NotNil(t, err)
 	})
 
 	t.Run("멤버십 아이디를 입력하지 않은 경우, 예외 처리한다.", func(t *testing.T) {
