@@ -107,7 +107,17 @@ func TestUpdate(t *testing.T) {
 	})
 
 	t.Run("멤버십 아이디를 입력하지 않은 경우, 예외 처리한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포가 주어지고
+		app := NewApplication(*NewRepository(map[string]Membership{}))
+		_, _ = app.Create(CreateRequest{"jenny", "naver"})
 
+		// when: 멤버쉽 아이디를 입력하지 않고 갱신한다.
+		req := UpdateRequest{"", "jenny", "naver"}
+		res, err := app.Update(req)
+
+		// then: 실패한다.
+		assert.Nil(t, res)
+		assert.NotNil(t, err)
 	})
 
 	t.Run("사용자 이름을 입력하지 않은 경우, 예외 처리한다.", func(t *testing.T) {
