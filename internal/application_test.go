@@ -101,8 +101,6 @@ func TestUpdate(t *testing.T) {
 		req := UpdateRequest{"2", "jenny", "naver"}
 		res, err := app.Update(req)
 
-		t.Log(res)
-
 		// then: 실패한다.
 		assert.Nil(t, res)
 		assert.NotNil(t, err)
