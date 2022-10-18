@@ -47,11 +47,15 @@ func (r *Repository) Create(request CreateRequest) (*Membership, error) {
 }
 
 func (r *Repository) Update(request UpdateRequest) (*Membership, error) {
-	switch {
 	// 사용자 ID를 찾을수 없는경우 에러
-	case !r.exists(request.ID):
+	if !r.exists(request.ID) {
 		return nil, UserIdNotFoundError
-	case r.existsName(request.UserName):
+	}
+	// 먼저 멤버쉽을 찾는다
+	membership := r.data[request.ID]
+	switch {
+	// 변경하려는 멤버쉽의 유저 이름이 기존과 이름과 서로 다르고 해당하는 이름이 이미 존재하는경우 에러
+	case membership.UserName != request.UserName && r.existsName(request.UserName):
 		return nil, UserNameAlreadyExistsError
 	case request.UserName == "":
 		return nil, UserNameEmptyError
@@ -60,7 +64,7 @@ func (r *Repository) Update(request UpdateRequest) (*Membership, error) {
 	case !slices.Contains([]string{"naver", "toss", "payco"}, request.MembershipType):
 		return nil, MembershipTypeInvalidError
 	}
-	membership := r.data[request.ID]
+
 	membership.UserName = request.UserName
 	membership.MembershipType = request.MembershipType
 	r.data[request.UserName] = membership
