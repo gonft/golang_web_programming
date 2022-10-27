@@ -12,7 +12,7 @@ import (
 const _defaultPort = 8080
 
 type Server struct {
-	handlers *handlers.Handlers
+	Handlers *handlers.Handlers
 }
 
 func NewDefaultServer() *Server {
@@ -23,12 +23,12 @@ func NewDefaultServer() *Server {
 	// 핸들러 생성
 	handler := handlers.New(service)
 	return &Server{
-		handlers: handler,
+		Handlers: handler,
 	}
 }
 
 func (s *Server) Run() {
 	e := handlers.Echo()
-	handlers.SetApi(e, s.handlers, nil)
+	handlers.SetApi(e, s.Handlers, nil)
 	log.Fatal(e.Start(fmt.Sprintf(":%d", _defaultPort)))
 }
