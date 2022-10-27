@@ -1,0 +1,3 @@
+###
+# @name membership
+GET {{endpoint}}/api/v1/membership
