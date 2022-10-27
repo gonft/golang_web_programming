@@ -201,3 +201,20 @@ func TestDelete(t *testing.T) {
 		assert.ErrorIs(t, err, repositories.UserIdNotFoundError)
 	})
 }
+
+func TestGet(t *testing.T) {
+	t.Run("ID가 1인 멤버십 조회한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
+		service := New(repositories.NewRepository(map[string]model.Membership{}))
+		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+
+		// when: 멤버쉽 ID 1을 조회한다.
+		res, err := service.GetByID("1")
+
+		// then: 성공한다.
+		assert.Nil(t, err)
+		assert.Equal(t, "1", res.ID)
+		assert.Equal(t, "jenny", res.UserName)
+		assert.Equal(t, "naver", res.MembershipType)
+	})
+}
