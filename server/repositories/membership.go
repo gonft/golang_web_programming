@@ -87,6 +87,15 @@ func (r *MembershipRepository) Delete(id string) error {
 	return nil
 }
 
+// GetAll 멤버쉽을 모두 가져온다.
+func (r *MembershipRepository) GetAll() []model.Membership {
+	var memberships []model.Membership
+	for _, value := range r.data {
+		memberships = append(memberships, value)
+	}
+	return memberships
+}
+
 // GetByID `id`를 가진 멤버쉽을 가져온다.
 func (r *MembershipRepository) GetByID(id string) (*model.Membership, error) {
 	if !r.exists(id) {

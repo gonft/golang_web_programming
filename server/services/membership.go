@@ -10,7 +10,7 @@ type MembershipService interface {
 	Create(request dto.CreateRequest) (*vo.CreateResponse, error)
 	Update(request dto.UpdateRequest) (*vo.UpdateResponse, error)
 	Delete(id string) error
-	GetAll() ([]vo.GetResponse, error)
+	GetAll() []vo.GetResponse
 	GetByID(id string) (*vo.GetResponse, error)
 }
 
@@ -23,7 +23,7 @@ func (m *MembershipServiceContext) Create(request dto.CreateRequest) (*vo.Create
 	if err != nil {
 		return nil, err
 	}
-	return &vo.CreateResponse{membership.UserName, membership.MembershipType}, nil
+	return &vo.CreateResponse{ID: membership.UserName, MembershipType: membership.MembershipType}, nil
 }
 
 func (m *MembershipServiceContext) Update(request dto.UpdateRequest) (*vo.UpdateResponse, error) {
@@ -38,8 +38,13 @@ func (m *MembershipServiceContext) Delete(id string) error {
 	return m.repo.Delete(id)
 }
 
-func (m *MembershipServiceContext) GetAll() ([]vo.GetResponse, error) {
-	return []vo.GetResponse{}, nil
+func (m *MembershipServiceContext) GetAll() []vo.GetResponse {
+	memberships := m.repo.GetAll()
+	var response []vo.GetResponse
+	for _, membership := range memberships {
+		response = append(response, vo.GetResponse{ID: membership.ID, UserName: membership.UserName, MembershipType: membership.MembershipType})
+	}
+	return response
 }
 
 func (m *MembershipServiceContext) GetByID(id string) (*vo.GetResponse, error) {

@@ -246,13 +246,14 @@ func TestGet(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny, tom이 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
 		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
-		_, _ = service.Create(dto.CreateRequest{"tom", "kakao"})
+		_, _ = service.Create(dto.CreateRequest{"tom", "toss"})
 
 		// when: 모든 멤버쉽을 조회한다.
-		res, err := service.GetAll()
+		res := service.GetAll()
+
+		t.Log(res)
 
 		// then: 성공한다.
-		assert.Nil(t, err)
 		assert.Equal(t, 2, len(res))
 	})
 }
