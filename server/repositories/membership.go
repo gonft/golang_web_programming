@@ -87,6 +87,15 @@ func (r *MembershipRepository) Delete(id string) error {
 	return nil
 }
 
+// GetByID `id`를 가진 멤버쉽을 가져온다.
+func (r *MembershipRepository) GetByID(id string) (*model.Membership, error) {
+	if !r.exists(id) {
+		return nil, UserIdNotFoundError
+	}
+	membership := r.data[id]
+	return &membership, nil
+}
+
 // NewRepository 멤버쉽 리포지토리를 생성한다.
 func NewRepository(data map[string]model.Membership) *MembershipRepository {
 	return &MembershipRepository{data: data}
