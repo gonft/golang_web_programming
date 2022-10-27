@@ -10,7 +10,7 @@ type MembershipService interface {
 	Create(request dto.CreateRequest) (*vo.CreateResponse, error)
 	Update(request dto.UpdateRequest) (*vo.UpdateResponse, error)
 	Delete(id string) error
-	Get() ([]vo.GetResponse, error)
+	GetAll() ([]vo.GetResponse, error)
 	GetByID(id string) (*vo.GetResponse, error)
 }
 
@@ -38,7 +38,7 @@ func (m *MembershipServiceContext) Delete(id string) error {
 	return m.repo.Delete(id)
 }
 
-func (m *MembershipServiceContext) Get() ([]vo.GetResponse, error) {
+func (m *MembershipServiceContext) GetAll() ([]vo.GetResponse, error) {
 	return []vo.GetResponse{}, nil
 }
 
