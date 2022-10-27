@@ -217,4 +217,16 @@ func TestGet(t *testing.T) {
 		assert.Equal(t, "jenny", res.UserName)
 		assert.Equal(t, "naver", res.MembershipType)
 	})
+
+	t.Run("ID가 1인 멤버십 조회에 실패한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포가 주어지고
+		service := New(repositories.NewRepository(map[string]model.Membership{}))
+
+		// when: 멤버쉽 ID 1을 조회한다.
+		res, err := service.GetByID("1")
+
+		// then: 실패한다.
+		assert.Nil(t, res)
+		assert.ErrorIs(t, err, repositories.UserIdNotFoundError)
+	})
 }

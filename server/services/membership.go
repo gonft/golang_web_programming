@@ -1,7 +1,6 @@
 package services
 
 import (
-	"golang_web_programming/server/model"
 	"golang_web_programming/server/model/dto"
 	"golang_web_programming/server/model/vo"
 	"golang_web_programming/server/repositories"
@@ -11,8 +10,8 @@ type MembershipService interface {
 	Create(request dto.CreateRequest) (*vo.CreateResponse, error)
 	Update(request dto.UpdateRequest) (*vo.UpdateResponse, error)
 	Delete(id string) error
-	Get() ([]model.Membership, error)
-	GetByID(id string) (model.Membership, error)
+	Get() ([]vo.GetResponse, error)
+	GetByID(id string) (*vo.GetResponse, error)
 }
 
 type MembershipServiceContext struct {
@@ -39,10 +38,14 @@ func (m *MembershipServiceContext) Delete(id string) error {
 	return m.repo.Delete(id)
 }
 
-func (m *MembershipServiceContext) Get() ([]model.Membership, error) {
-	return []model.Membership{}, nil
+func (m *MembershipServiceContext) Get() ([]vo.GetResponse, error) {
+	return []vo.GetResponse{}, nil
 }
 
-func (m *MembershipServiceContext) GetByID(id string) (model.Membership, error) {
-	return model.Membership{}, nil
+func (m *MembershipServiceContext) GetByID(id string) (*vo.GetResponse, error) {
+	membership, err := m.repo.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return &vo.GetResponse{ID: membership.ID, UserName: membership.UserName, MembershipType: membership.MembershipType}, nil
 }
