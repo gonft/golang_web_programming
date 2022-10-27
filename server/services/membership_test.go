@@ -229,4 +229,16 @@ func TestGet(t *testing.T) {
 		assert.Nil(t, res)
 		assert.ErrorIs(t, err, repositories.UserIdNotFoundError)
 	})
+
+	t.Run("ID를 입력하지 않았을 때 예외 처리한다.", func(t *testing.T) {
+		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
+		service := New(repositories.NewRepository(map[string]model.Membership{}))
+
+		// when: 멤버쉽 ID를 입력하지 않고 조회한다.
+		res, err := service.GetByID("")
+
+		// then: 실패한다.
+		assert.Nil(t, res)
+		assert.ErrorIs(t, err, repositories.UserIdNotFoundError)
+	})
 }
