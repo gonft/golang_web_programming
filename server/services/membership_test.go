@@ -13,7 +13,7 @@ import (
 func TestCreateMembership(t *testing.T) {
 	t.Run("멤버십을 생성한다.", func(t *testing.T) {
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		req := dto.CreateRequest{"jenny", "naver"}
+		req := dto.CreateRequest{UserName: "jenny", MembershipType: "naver"}
 		res, err := service.Create(req)
 		assert.Nil(t, err)
 		assert.NotEmpty(t, res.ID)
@@ -23,9 +23,9 @@ func TestCreateMembership(t *testing.T) {
 	t.Run("이미 등록된 사용자 이름이 존재할 경우 실패한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 		// when: 다시 jenny를 등록하려고 한다.
-		res, err := service.Create(dto.CreateRequest{"jenny", "naver"})
+		res, err := service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 		// then: 실패한다.
 		assert.Nil(t, res)
 		assert.NotNil(t, err)
@@ -35,7 +35,7 @@ func TestCreateMembership(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포가 주어지고
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
 		// when: 이름 없이 사용자를 등록하려고 한다.
-		req := dto.CreateRequest{"", "naver"}
+		req := dto.CreateRequest{MembershipType: "naver"}
 		res, err := service.Create(req)
 		// then: 실패한다.
 		assert.Nil(t, res)
@@ -46,7 +46,7 @@ func TestCreateMembership(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포가 주어지고
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
 		// when: 이름 없이 사용자를 등록하려고 한다.
-		req := dto.CreateRequest{"jenny", ""}
+		req := dto.CreateRequest{UserName: "jenny"}
 		res, err := service.Create(req)
 		// then: 실패한다.
 		assert.Nil(t, res)
@@ -60,7 +60,7 @@ func TestCreateMembership(t *testing.T) {
 		// when: naver/toss/payco 타입 등록
 		types := []string{"naver", "toss", "payco"}
 		for i := 0; i < len(types); i++ {
-			req := dto.CreateRequest{strings.Join([]string{"jenny", strconv.Itoa(i)}, "-"), types[i]}
+			req := dto.CreateRequest{UserName: strings.Join([]string{"jenny", strconv.Itoa(i)}, "-"), MembershipType: types[i]}
 			res, err := service.Create(req)
 			// then: 성공한다.
 			assert.Nil(t, err)
@@ -68,7 +68,7 @@ func TestCreateMembership(t *testing.T) {
 			assert.Equal(t, req.MembershipType, res.MembershipType)
 		}
 		// when: naver/toss/payco 말고 다른 타입 등록
-		req := dto.CreateRequest{"jenny", "kakao"}
+		req := dto.CreateRequest{UserName: "jenny", MembershipType: "kakao"}
 		res, err := service.Create(req)
 		// then: 실패한다.
 		assert.Nil(t, res)
@@ -80,10 +80,10 @@ func TestUpdate(t *testing.T) {
 	t.Run("멤버십 정보를 갱신한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 제니의 멤버쉽을 toss로 갱신한다.
-		req := dto.UpdateRequest{"1", "jenny", "toss"}
+		req := dto.UpdateRequest{ID: "1", UserName: "jenny", MembershipType: "toss"}
 		res, err := service.Update(req)
 
 		// then: 성공한다.
@@ -95,11 +95,11 @@ func TestUpdate(t *testing.T) {
 	t.Run("수정하려는 사용자의 이름이 이미 존재하는 사용자 이름이라면 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
-		_, _ = service.Create(dto.CreateRequest{"jenny2", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny2", MembershipType: "naver"})
 
 		// when: jenny2의 이름을 jenny로 갱신한다.
-		req := dto.UpdateRequest{"2", "jenny", "naver"}
+		req := dto.UpdateRequest{ID: "2", UserName: "jenny", MembershipType: "naver"}
 		res, err := service.Update(req)
 
 		// then: 실패한다.
@@ -110,10 +110,10 @@ func TestUpdate(t *testing.T) {
 	t.Run("멤버십 아이디를 입력하지 않은 경우, 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 멤버쉽 아이디를 입력하지 않고 갱신한다.
-		req := dto.UpdateRequest{"", "jenny", "naver"}
+		req := dto.UpdateRequest{UserName: "jenny", MembershipType: "naver"}
 		res, err := service.Update(req)
 
 		// then: 실패한다.
@@ -124,10 +124,10 @@ func TestUpdate(t *testing.T) {
 	t.Run("사용자 이름을 입력하지 않은 경우, 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 사용자 이름을 입력하지 않고 갱신한다.
-		req := dto.UpdateRequest{"1", "", "naver"}
+		req := dto.UpdateRequest{ID: "1", MembershipType: "naver"}
 		res, err := service.Update(req)
 
 		// then: 실패한다.
@@ -138,10 +138,10 @@ func TestUpdate(t *testing.T) {
 	t.Run("멤버쉽 타입을 입력하지 않은 경우, 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 멤버쉽 타입을 입력하지 않고 갱신한다.
-		req := dto.UpdateRequest{"1", "jenny1", ""}
+		req := dto.UpdateRequest{ID: "1", UserName: "jenny1"}
 		res, err := service.Update(req)
 
 		// then: 실패한다.
@@ -152,10 +152,10 @@ func TestUpdate(t *testing.T) {
 	t.Run("주어진 멤버쉽 타입이 아닌 경우, 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 주어진 멤버쉽 타입이 아닌 경우 갱신한다.
-		req := dto.UpdateRequest{"1", "jenny2", "kakao"}
+		req := dto.UpdateRequest{ID: "1", UserName: "jenny2", MembershipType: "kakao"}
 		res, err := service.Update(req)
 
 		// then: 실패한다.
@@ -168,7 +168,7 @@ func TestDelete(t *testing.T) {
 	t.Run("멤버십을 삭제한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 멤버쉽 ID 1을 삭제한다.
 		err := service.Delete("1")
@@ -180,7 +180,7 @@ func TestDelete(t *testing.T) {
 	t.Run("id를 입력하지 않았을 때 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 멤버쉽 ID를 입력하지 않고 삭제한다.
 		err := service.Delete("")
@@ -192,7 +192,7 @@ func TestDelete(t *testing.T) {
 	t.Run("입력한 id가 존재하지 않을 때 예외 처리한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 존재하지 멤버쉽 아이디를 사용하여 삭제한다.
 		err := service.Delete("2")
@@ -206,7 +206,7 @@ func TestGet(t *testing.T) {
 	t.Run("ID가 1인 멤버십 조회한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny가 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
 
 		// when: 멤버쉽 ID 1을 조회한다.
 		res, err := service.GetByID("1")
@@ -245,8 +245,8 @@ func TestGet(t *testing.T) {
 	t.Run("모든 멤버십을 조회한다.", func(t *testing.T) {
 		// given: 어플리케이션 멤버쉽 레포에 사용자 jenny, tom이 존재한다.
 		service := New(repositories.NewRepository(map[string]model.Membership{}))
-		_, _ = service.Create(dto.CreateRequest{"jenny", "naver"})
-		_, _ = service.Create(dto.CreateRequest{"tom", "toss"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "jenny", MembershipType: "naver"})
+		_, _ = service.Create(dto.CreateRequest{UserName: "tom", MembershipType: "toss"})
 
 		// when: 모든 멤버쉽을 조회한다.
 		res := service.GetAll()
