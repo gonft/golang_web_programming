@@ -23,7 +23,7 @@ func SetApi(e *echo.Echo, h *Handlers, m echo.MiddlewareFunc) {
 	g.Use(m)
 
 	// Membership
-	g.GET("/membership", h.MembershipHandler.Get)
+	g.GET("/membership", h.MembershipHandler.GetAll)
 	g.GET("/membership/:id", h.MembershipHandler.GetByID)
 	g.POST("/membership", h.MembershipHandler.Create)
 	g.PUT("/membership/:id", h.MembershipHandler.Update)

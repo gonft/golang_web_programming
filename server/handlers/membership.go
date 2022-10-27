@@ -9,7 +9,7 @@ type MembershipHandler struct {
 	services.MembershipService
 }
 
-func (m *MembershipHandler) Get(c echo.Context) error {
+func (m *MembershipHandler) GetAll(c echo.Context) error {
 	return nil
 }
 
