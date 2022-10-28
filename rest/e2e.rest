@@ -1,3 +1,29 @@
 ###
-# @name membership
+# @name getAllMembership
 GET {{endpoint}}/api/v1/membership
+
+###
+# @name getById
+GET {{endpoint}}/api/v1/membership/1
+
+###
+# @name createMembership
+POST {{endpoint}}/api/v1/membership
+
+{
+  "userName": "jenny",
+  "membershipType": "naver"
+}
+
+###
+# @name updateMembership
+PUT {{endpoint}}/api/v1/membership/1
+
+{
+  "userName": "jenny",
+  "membershipType": "toss"
+}
+
+###
+# @name deleteMembership
+DELETE {{endpoint}}/api/v1/membership/1
