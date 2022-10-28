@@ -25,9 +25,9 @@ func TestMembership(t *testing.T) {
 		},
 	})
 
-	t.Run("멤버쉽 생성", func(t *testing.T) {
-		t.Run("네이버 멤버쉽 생성", func(t *testing.T) {
-			// given 네이버 멤버쉽 생성
+	t.Run("ATDD", func(t *testing.T) {
+		t.Run("멤버쉽 생성 삭재후 재삭제 불가능", func(t *testing.T) {
+			// given: 멤버쉽을 생성 한다
 			e.POST("/api/v1/membership").
 				WithJSON(
 					dto.CreateRequest{
@@ -36,11 +36,16 @@ func TestMembership(t *testing.T) {
 					},
 				).
 				Expect().
-				Status(http.StatusCreated).
-				JSON().Object().
-				Value("id").String().NotEmpty()
-			// when
-			// then
+				Status(http.StatusCreated)
+			// given: 멤버쉽을 삭제 한다
+			e.DELETE("/api/v1/membership/1").
+				Expect().
+				Status(http.StatusOK)
+			// given: 멤버십을 다시 삭제할 수 없다
+			e.DELETE("/api/v1/membership/1").
+				Expect().
+				Status(http.StatusBadRequest)
 		})
 	})
+
 }

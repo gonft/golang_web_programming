@@ -9,7 +9,7 @@ import (
 )
 
 var UserNameAlreadyExistsError = errors.New("이미 등록된 사용자 이름이 존재합니다.")
-var UserIdNotFoundError = errors.New("사용자 이름을 찾을 수 없습니다.")
+var UserIdNotFoundError = errors.New("사용자 아이디를 찾을 수 없습니다.")
 var UserNameEmptyError = errors.New("사용자 이름이 비어있습니다.")
 var MembershipTypeEmptyError = errors.New("멤버십 타입이 비어있습니다.")
 var MembershipTypeInvalidError = errors.New("멤버십 타입이 잘못되었습니다.")

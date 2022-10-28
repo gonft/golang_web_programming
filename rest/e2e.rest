@@ -9,6 +9,7 @@ GET {{endpoint}}/api/v1/membership/1
 ###
 # @name createMembership
 POST {{endpoint}}/api/v1/membership
+Content-Type: application/json
 
 {
   "userName": "jenny",
